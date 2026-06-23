@@ -25,8 +25,5 @@ steps:
       - "--set-env-vars"
       - "NEXT_PUBLIC_SUPABASE_URL=https://pmjcimkqthgyortulvyk.supabase.co,NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_h81SbQOich8v2Z2JA6_hTg__DtKRj4Z"
 
-images:
-  - "gcr.io/$PROJECT_ID/github.com/darnold5000/ondeckreps:$COMMIT_SHA"
-
 options:
   logging: CLOUD_LOGGING_ONLY
