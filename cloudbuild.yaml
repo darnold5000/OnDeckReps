@@ -1,0 +1,31 @@
+steps:
+  - name: "gcr.io/k8s-skaffold/pack"
+    args:
+      - "build"
+      - "gcr.io/$PROJECT_ID/github.com/darnold5000/ondeckreps:$COMMIT_SHA"
+      - "--builder"
+      - "gcr.io/buildpacks/builder"
+      - "--env"
+      - "NEXT_PUBLIC_SUPABASE_URL=https://pmjcimkqthgyortulvyk.supabase.co"
+      - "--env"
+      - "NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_h81SbQOich8v2Z2JA6_hTg__DtKRj4Z"
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    args:
+      - "run"
+      - "deploy"
+      - "ondeck-reps"
+      - "--image"
+      - "gcr.io/$PROJECT_ID/github.com/darnold5000/ondeckreps:$COMMIT_SHA"
+      - "--region"
+      - "us-central1"
+      - "--allow-unauthenticated"
+      - "--set-env-vars"
+      - "NEXT_PUBLIC_SUPABASE_URL=https://pmjcimkqthgyortulvyk.supabase.co,NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_h81SbQOich8v2Z2JA6_hTg__DtKRj4Z"
+
+images:
+  - "gcr.io/$PROJECT_ID/github.com/darnold5000/ondeckreps:$COMMIT_SHA"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
