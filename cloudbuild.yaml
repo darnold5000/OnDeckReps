@@ -5,6 +5,7 @@ steps:
       - "gcr.io/$PROJECT_ID/github.com/darnold5000/ondeckreps:$COMMIT_SHA"
       - "--builder"
       - "gcr.io/buildpacks/builder"
+      - "--publish"
       - "--env"
       - "NEXT_PUBLIC_SUPABASE_URL=https://pmjcimkqthgyortulvyk.supabase.co"
       - "--env"
