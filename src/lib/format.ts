@@ -71,3 +71,18 @@ export function formatRequestType(type: string): string {
       return type;
   }
 }
+
+export function formatSessionType(requestType: string): string {
+  switch (requestType) {
+    case "need_pitcher":
+      return "Live ABs";
+    case "need_hitter":
+      return "Hitting reps";
+    case "need_catcher":
+      return "Bullpen";
+    case "need_group_session":
+      return "Small group";
+    default:
+      return "Session";
+  }
+}

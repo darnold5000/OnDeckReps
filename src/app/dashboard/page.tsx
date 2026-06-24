@@ -88,7 +88,7 @@ export default async function DashboardPage() {
         </CardContent>
       </Card>
 
-      <section className="space-y-3">
+      <section id="players" className="scroll-mt-20 space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">My player profiles</h2>
           <ButtonLink href="/players/new" size="sm" variant="ghost">

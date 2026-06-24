@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { APP_NAME } from "@/lib/constants";
 import { AuthForm } from "@/components/auth-form";
 
 export const metadata = { title: "Log in" };
@@ -17,7 +18,7 @@ export default function LoginPage() {
         <CardHeader>
           <CardTitle>Log in</CardTitle>
           <CardDescription>
-            Welcome back to Live Reps
+            Welcome back to {APP_NAME}
           </CardDescription>
         </CardHeader>
         <CardContent>

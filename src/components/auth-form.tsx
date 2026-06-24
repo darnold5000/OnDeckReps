@@ -49,7 +49,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
       }
     }
 
-    router.push("/dashboard");
+    router.push(mode === "signup" ? "/onboarding" : "/dashboard");
     router.refresh();
   }
 

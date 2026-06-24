@@ -95,3 +95,29 @@ export function StatusBadge({ status }: { status: string }) {
     </Badge>
   );
 }
+
+const sessionColors: Record<string, string> = {
+  "Live ABs": "bg-amber-100 text-amber-900 border-amber-200",
+  "Hitting reps": "bg-lime-100 text-lime-900 border-lime-200",
+  Bullpen: "bg-violet-100 text-violet-900 border-violet-200",
+  "Small group": "bg-rose-100 text-rose-900 border-rose-200",
+};
+
+export function SessionTypeBadge({ label }: { label: string }) {
+  return (
+    <Badge
+      variant="outline"
+      className={cn(sessionColors[label] ?? "bg-muted text-muted-foreground")}
+    >
+      {label}
+    </Badge>
+  );
+}
+
+export function ChipBadge({ label }: { label: string }) {
+  return (
+    <Badge variant="outline" className="bg-muted/60 text-foreground">
+      {label}
+    </Badge>
+  );
+}

@@ -1,6 +1,57 @@
-export const APP_NAME = "Live Reps";
+export const APP_NAME = "OnDeck Reps";
 export const APP_TAGLINE =
-  "Find pitchers, hitters, and catchers for real baseball reps.";
+  "Find live at-bats, bullpen catchers, and throwing partners near you.";
+
+export const LANDING_HEADLINE =
+  "Find live at-bats, bullpen catchers, and throwing partners near you";
+
+export const LANDING_SUBHEAD =
+  "Post what you need — pitcher, hitter, catcher, location, and time — and connect with travel ball families for game-like reps outside team practice.";
+
+export const SAMPLE_REQUESTS = [
+  {
+    title: "Need 11U pitcher for live ABs",
+    location: "Plainfield, IN",
+    when: "Tomorrow · 6:30 PM",
+    chips: ["Pitcher", "11U", "AA", "Live ABs", "$25"],
+    note: "AA/AAA hitter · 45 mins",
+  },
+  {
+    title: "13U catcher for bullpen + short live session",
+    location: "Carmel, IN",
+    when: "Saturday · 11:00 AM",
+    chips: ["Catcher", "13U", "Bullpen", "Live ABs"],
+    note: "Pitcher throwing 35–40 pitches",
+  },
+  {
+    title: "16U hitter wanted for velo work",
+    location: "Westfield, IN",
+    when: "Sunday · afternoon",
+    chips: ["Hitter", "16U", "HS", "Velo work"],
+    note: "High school arm, indoor facility",
+  },
+] as const;
+
+export const HOW_IT_WORKS_STEPS = [
+  {
+    step: "1",
+    title: "Post or browse",
+    description:
+      "Need a pitcher for live ABs? Post the time, place, age, and level. Or browse what other families need near you.",
+  },
+  {
+    step: "2",
+    title: "Match with a family",
+    description:
+      "Respond to a request or share your player's availability. Parents review responses and pick the right fit.",
+  },
+  {
+    step: "3",
+    title: "Run the session together",
+    description:
+      "Coordinate details directly, show up together, and supervise. Every session stays parent-run.",
+  },
+] as const;
 
 export const AGE_DIVISIONS = [
   "9U",
@@ -68,4 +119,4 @@ export const CONTACT_PREFERENCES = [
 export const REQUEST_STATUSES = ["open", "filled", "cancelled"] as const;
 
 export const SAFETY_NOTICE =
-  "Live Reps helps families connect. Parents/guardians are responsible for supervision, location safety, protective equipment, and deciding whether a session is appropriate. Youth players should never attend sessions without a parent/guardian.";
+  "OnDeck Reps helps families connect. Parents/guardians are responsible for supervision, location safety, protective equipment, and deciding whether a session is appropriate. Youth players should never attend sessions without a parent/guardian.";

@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { APP_NAME } from "@/lib/constants";
 import { AuthForm } from "@/components/auth-form";
 
 export const metadata = { title: "Sign up" };
@@ -17,7 +18,7 @@ export default function SignupPage() {
         <CardHeader>
           <CardTitle>Create account</CardTitle>
           <CardDescription>
-            Join Live Reps to find and offer baseball reps
+            Join {APP_NAME} to find and offer baseball reps
           </CardDescription>
         </CardHeader>
         <CardContent>
