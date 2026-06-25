@@ -20,11 +20,11 @@ export function SampleRequestCard({ request }: { request: SampleRequest }) {
     <Card className="border-dashed bg-muted/30">
       <CardHeader className="pb-2">
         <CardTitle className="text-base leading-snug">{request.title}</CardTitle>
-        <CardDescription className="flex flex-wrap gap-1.5 pt-1">
+        <div className="flex flex-wrap gap-2 pt-2">
           {request.chips.map((chip) => (
             <ChipBadge key={chip} label={chip} />
           ))}
-        </CardDescription>
+        </div>
       </CardHeader>
       <CardContent className="space-y-1 text-sm text-muted-foreground">
         <p>

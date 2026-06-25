@@ -1,15 +1,14 @@
 steps:
   - name: "gcr.io/k8s-skaffold/pack"
+    env:
+      - "NEXT_PUBLIC_SUPABASE_URL=https://pmjcimkqthgyortulvyk.supabase.co"
+      - "NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_h81SbQOich8v2Z2JA6_hTg__DtKRj4Z"
     args:
       - "build"
       - "gcr.io/$PROJECT_ID/github.com/darnold5000/ondeckreps:$COMMIT_SHA"
       - "--builder"
       - "gcr.io/buildpacks/builder"
       - "--publish"
-      - "--env"
-      - "NEXT_PUBLIC_SUPABASE_URL=https://pmjcimkqthgyortulvyk.supabase.co"
-      - "--env"
-      - "NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_h81SbQOich8v2Z2JA6_hTg__DtKRj4Z"
 
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: "gcloud"

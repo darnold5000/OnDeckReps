@@ -116,7 +116,10 @@ export function SessionTypeBadge({ label }: { label: string }) {
 
 export function ChipBadge({ label }: { label: string }) {
   return (
-    <Badge variant="outline" className="bg-muted/60 text-foreground text-xs">
+    <Badge
+      variant="outline"
+      className="shrink-0 whitespace-nowrap bg-muted/60 text-foreground text-xs"
+    >
       {label}
     </Badge>
   );

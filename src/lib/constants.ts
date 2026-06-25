@@ -1,15 +1,14 @@
 export const APP_NAME = "OnDeck Reps";
 export const APP_TAGLINE =
-  "Find live at-bats, bullpen catchers, and throwing partners near you.";
+  "Find live baseball reps near you — at-bats, bullpen catchers, and throwing partners.";
 
-export const LANDING_HEADLINE =
-  "Find live at-bats, bullpen catchers, and throwing partners near you";
+export const LANDING_HEADLINE = "Find live baseball reps near you";
 
 export const LANDING_SUBHEAD =
-  "Post what you need — pitcher, hitter, catcher, location, and time — and connect with travel ball families for game-like reps outside team practice.";
+  "Find live at-bats, bullpen catchers, and throwing partners near you.";
 
-export const LANDING_SUBHEAD_SHORT =
-  "Connect with travel ball families for game-like reps near you.";
+export const LANDING_DETAIL =
+  "Post what you need — pitcher, hitter, catcher, location, and time — and connect with travel ball families for game-like reps outside team practice.";
 
 export const SAMPLE_REQUESTS = [
   {

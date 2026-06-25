@@ -10,7 +10,7 @@ import {
   HOW_IT_WORKS_STEPS,
   LANDING_HEADLINE,
   LANDING_SUBHEAD,
-  LANDING_SUBHEAD_SHORT,
+  LANDING_DETAIL,
   SAMPLE_REQUESTS,
 } from "@/lib/constants";
 import { CalendarPlus, Users } from "lucide-react";
@@ -37,11 +37,11 @@ export default async function HomePage() {
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl lg:text-5xl">
           {LANDING_HEADLINE}
         </h1>
-        <p className="mx-auto max-w-2xl text-sm text-muted-foreground sm:hidden">
-          {LANDING_SUBHEAD_SHORT}
-        </p>
-        <p className="mx-auto hidden max-w-2xl text-base text-muted-foreground sm:block md:text-lg">
+        <p className="mx-auto max-w-2xl text-sm text-muted-foreground md:text-base">
           {LANDING_SUBHEAD}
+        </p>
+        <p className="mx-auto hidden max-w-2xl text-sm text-muted-foreground sm:block md:text-base">
+          {LANDING_DETAIL}
         </p>
         <div className="flex flex-col gap-2 pt-1 sm:flex-row sm:justify-center sm:gap-3">
           <ButtonLink href="/requests/new" size="lg" className="min-h-11 w-full sm:w-auto">
@@ -53,7 +53,7 @@ export default async function HomePage() {
             variant="outline"
             className="min-h-11 w-full sm:w-auto"
           >
-            Browse Reps Near Me
+            Browse Requests
           </ButtonLink>
         </div>
       </section>
@@ -152,9 +152,6 @@ export default async function HomePage() {
         )}
       </section>
 
-      <p className="text-center text-xs text-muted-foreground">
-        Coming soon: payments, background checks, and in-app messaging.
-      </p>
     </div>
   );
 }
