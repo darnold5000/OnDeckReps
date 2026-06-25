@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { EmptyState } from "@/components/empty-state";
 import type { PlayerProfile } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -67,24 +68,25 @@ export function InterestForm({ requestId, players }: InterestFormProps) {
   if (submitted) {
     return (
       <p className="rounded-md bg-emerald-50 p-4 text-sm text-emerald-800">
-        Your interest has been submitted! The request owner will be notified.
+        Your interest has been submitted! The request owner will see your player
+        and message.
       </p>
     );
   }
 
   if (players.length === 0) {
     return (
-      <p className="text-muted-foreground">
-        <a href="/players/new" className="text-primary underline">
-          Add a player profile
-        </a>{" "}
-        to respond to this request.
-      </p>
+      <EmptyState
+        title="Add a player first"
+        description="You need a player profile before you can respond to rep requests."
+        actionLabel="Add Player"
+        actionHref="/players/new"
+      />
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
         <p className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
           {error}
@@ -92,12 +94,12 @@ export function InterestForm({ requestId, players }: InterestFormProps) {
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="player_profile_id">Your player *</Label>
+        <Label htmlFor="player_profile_id">Which player is available? *</Label>
         <FormSelect
           id="player_profile_id"
           name="player_profile_id"
           required
-          placeholder="Select player"
+          placeholder="Select your player"
           options={players.map((p) => ({
             value: p.id,
             label: `${p.player_name} (${p.age_division})`,
@@ -106,18 +108,22 @@ export function InterestForm({ requestId, players }: InterestFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="message">Message</Label>
+        <Label htmlFor="message">Message to the requesting family</Label>
         <Textarea
           id="message"
           name="message"
-          rows={3}
-          placeholder="Tell them about your player and availability..."
+          rows={4}
+          placeholder="Share your player's experience, schedule flexibility, and anything helpful for this session..."
         />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="suggested_location">Suggested location (optional)</Label>
-        <Input id="suggested_location" name="suggested_location" />
+        <Input
+          id="suggested_location"
+          name="suggested_location"
+          placeholder="Field name, facility, or area"
+        />
       </div>
 
       <div className="space-y-2">
@@ -128,10 +134,11 @@ export function InterestForm({ requestId, players }: InterestFormProps) {
           type="number"
           min={0}
           step="0.01"
+          placeholder="0.00"
         />
       </div>
 
-      <Button type="submit" disabled={loading} className="w-full">
+      <Button type="submit" disabled={loading} className="min-h-11 w-full">
         {loading ? "Submitting..." : "I'm interested"}
       </Button>
     </form>

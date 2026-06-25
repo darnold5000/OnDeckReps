@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { AvailabilityForm } from "@/components/availability-form";
+import { SafetyNotice } from "@/components/safety-notice";
 import type { PlayerProfile } from "@/lib/types";
 
 export const metadata = { title: "Post Availability" };
@@ -45,6 +46,7 @@ export default async function NewAvailabilityPage() {
           <AvailabilityForm players={(players as PlayerProfile[]) ?? []} />
         </CardContent>
       </Card>
+      <SafetyNotice />
       <p className="text-sm text-muted-foreground">
         <Link href="/dashboard" className="underline">
           Back to dashboard

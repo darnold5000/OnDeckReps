@@ -8,12 +8,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ButtonLink } from "@/components/button-link";
-import { Separator } from "@/components/ui/separator";
+import { DetailSummary } from "@/components/detail-summary";
+import { EmptyState } from "@/components/empty-state";
 import {
   AgeBadge,
   LevelBadge,
   PayBadge,
   RoleBadge,
+  SessionTypeBadge,
   StatusBadge,
 } from "@/components/status-badges";
 import { SafetyNotice } from "@/components/safety-notice";
@@ -22,11 +24,11 @@ import { RequestActions } from "@/components/request-actions";
 import type { RepRequest, RequestResponse, PlayerProfile } from "@/lib/types";
 import {
   formatDate,
-  formatTime,
   formatLocationMode,
   formatRequestType,
+  formatSessionType,
+  formatTime,
 } from "@/lib/format";
-import { MapPin, Users, Calendar, Clock } from "lucide-react";
 
 export async function generateMetadata({
   params,
@@ -67,6 +69,15 @@ export default async function RequestDetailPage({
   };
 
   const isOwner = user?.id === typedRequest.user_id;
+  const sessionType = formatSessionType(typedRequest.request_type);
+  const locationLine = [
+    typedRequest.location_name,
+    typedRequest.city,
+    typedRequest.state,
+    typedRequest.address ? `(${typedRequest.address})` : null,
+  ]
+    .filter(Boolean)
+    .join(", ");
 
   let responses: RequestResponse[] = [];
   let myPlayers: PlayerProfile[] = [];
@@ -88,87 +99,129 @@ export default async function RequestDetailPage({
     myPlayers = (data as PlayerProfile[]) ?? [];
   }
 
+  const showInterest = !isOwner && typedRequest.status === "open";
+
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <div className="space-y-2">
-        <div className="flex flex-wrap items-start justify-between gap-2">
-          <h1 className="text-2xl font-bold">{typedRequest.title}</h1>
-          <StatusBadge status={typedRequest.status} />
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          <RoleBadge role={typedRequest.role_needed} />
-          <AgeBadge division={typedRequest.age_division} />
-          <LevelBadge level={typedRequest.team_level} />
-          <PayBadge
-            payType={typedRequest.pay_type}
-            amount={typedRequest.pay_amount}
-          />
-        </div>
-        <p className="text-sm text-muted-foreground">
-          {formatRequestType(typedRequest.request_type)} · Posted by{" "}
-          {typedRequest.profiles?.full_name ?? "Parent"}
-        </p>
+    <div className="mx-auto max-w-2xl space-y-5">
+      <DetailSummary
+        title={typedRequest.title}
+        badge={<StatusBadge status={typedRequest.status} />}
+        chips={
+          <>
+            <RoleBadge role={typedRequest.role_needed} />
+            <AgeBadge division={typedRequest.age_division} />
+            <LevelBadge level={typedRequest.team_level} />
+            <SessionTypeBadge label={sessionType} />
+            <PayBadge
+              payType={typedRequest.pay_type}
+              amount={typedRequest.pay_amount}
+            />
+          </>
+        }
+        rows={[
+          {
+            label: "Date",
+            value: formatDate(typedRequest.session_date),
+          },
+          {
+            label: "Time",
+            value: `${formatTime(typedRequest.start_time)}${
+              typedRequest.end_time ? ` – ${formatTime(typedRequest.end_time)}` : ""
+            }`,
+          },
+          {
+            label: "Location",
+            value: locationLine,
+          },
+          {
+            label: "Spots",
+            value: `${typedRequest.spots_needed} needed`,
+          },
+          {
+            label: "Posted by",
+            value: typedRequest.profiles?.full_name ?? "Parent",
+          },
+          {
+            label: "Type",
+            value: formatRequestType(typedRequest.request_type),
+          },
+        ]}
+      />
+
+      {/* Primary CTA — sticky on mobile */}
+      <div className="sticky top-14 z-30 -mx-4 border-b bg-background/95 px-4 py-3 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+        {isOwner && typedRequest.status === "open" && (
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <ButtonLink href={`#responses`} className="min-h-11 w-full sm:w-auto">
+              View responses ({responses.length})
+            </ButtonLink>
+            <RequestActions
+              requestId={typedRequest.id}
+              status={typedRequest.status}
+            />
+          </div>
+        )}
+        {showInterest && (
+          <div className="space-y-2">
+            {user ? (
+              myPlayers.length > 0 ? (
+                <ButtonLink href="#respond" className="min-h-11 w-full">
+                  I&apos;m interested
+                </ButtonLink>
+              ) : (
+                <ButtonLink href="/players/new" className="min-h-11 w-full">
+                  Add a player to respond
+                </ButtonLink>
+              )
+            ) : (
+              <ButtonLink href="/signup" className="min-h-11 w-full">
+                Sign up to respond
+              </ButtonLink>
+            )}
+          </div>
+        )}
       </div>
 
-      <SafetyNotice />
+      {typedRequest.description && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">About this session</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm text-muted-foreground">
+            {typedRequest.description}
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Session details</CardTitle>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">Session details</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          {typedRequest.description && (
-            <p className="text-muted-foreground">{typedRequest.description}</p>
-          )}
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-            {formatDate(typedRequest.session_date)}
-          </div>
-          <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-muted-foreground" />
-            {formatTime(typedRequest.start_time)}
-            {typedRequest.end_time && ` – ${formatTime(typedRequest.end_time)}`}
-          </div>
-          <div className="flex items-center gap-2">
-            <MapPin className="h-4 w-4 text-muted-foreground" />
-            {typedRequest.location_name && `${typedRequest.location_name}, `}
-            {typedRequest.city}, {typedRequest.state}
-            {typedRequest.address && ` (${typedRequest.address})`}
-          </div>
-          <p className="text-muted-foreground">
-            Location: {formatLocationMode(typedRequest.location_mode)}
-          </p>
-          <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-muted-foreground" />
-            {typedRequest.spots_needed} spot
-            {typedRequest.spots_needed !== 1 ? "s" : ""} needed
-          </div>
+        <CardContent className="space-y-2 text-sm text-muted-foreground">
+          <p>Location plan: {formatLocationMode(typedRequest.location_mode)}</p>
           {typedRequest.safety_notes && (
-            <p className="rounded-md bg-muted p-3">
-              <strong>Safety notes:</strong> {typedRequest.safety_notes}
+            <p className="rounded-md bg-muted p-3 text-foreground">
+              <strong className="font-medium">Session notes:</strong>{" "}
+              {typedRequest.safety_notes}
             </p>
           )}
         </CardContent>
       </Card>
 
+      <SafetyNotice />
+
       {isOwner && (
-        <Card>
+        <Card id="responses">
           <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">
-                Interested responses ({responses.length})
-              </CardTitle>
-              <RequestActions
-                requestId={typedRequest.id}
-                status={typedRequest.status}
-              />
-            </div>
+            <CardTitle className="text-lg">
+              Interested families ({responses.length})
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {responses.length ? (
               responses.map((response) => (
-                <div key={response.id} className="rounded-lg border p-4 space-y-2">
-                  <div className="flex items-center justify-between">
+                <div key={response.id} className="space-y-2 rounded-lg border p-4">
+                  <div className="flex items-center justify-between gap-2">
                     <p className="font-medium">
                       {response.profiles?.full_name ?? "Parent"}
                     </p>
@@ -197,18 +250,22 @@ export default async function RequestDetailPage({
                 </div>
               ))
             ) : (
-              <p className="text-sm text-muted-foreground">
-                No responses yet.
-              </p>
+              <EmptyState
+                title="No responses yet"
+                description="When families respond, you'll see their player, message, and contact info here."
+                actionLabel="Browse other requests"
+                actionHref="/requests"
+                actionVariant="outline"
+              />
             )}
           </CardContent>
         </Card>
       )}
 
-      {!isOwner && typedRequest.status === "open" && (
-        <Card>
+      {showInterest && (
+        <Card id="respond">
           <CardHeader>
-            <CardTitle className="text-lg">I&apos;m interested</CardTitle>
+            <CardTitle className="text-lg">Respond to this request</CardTitle>
           </CardHeader>
           <CardContent>
             {user ? (
@@ -216,16 +273,25 @@ export default async function RequestDetailPage({
             ) : (
               <div className="space-y-3">
                 <p className="text-sm text-muted-foreground">
-                  Log in to respond to this request.
+                  Create a free account to tell this family about your player.
                 </p>
-                <ButtonLink href="/login">Log in</ButtonLink>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <ButtonLink href="/signup" className="min-h-11 w-full sm:w-auto">
+                    Sign up to respond
+                  </ButtonLink>
+                  <ButtonLink
+                    href="/login"
+                    variant="outline"
+                    className="min-h-11 w-full sm:w-auto"
+                  >
+                    Log in
+                  </ButtonLink>
+                </div>
               </div>
             )}
           </CardContent>
         </Card>
       )}
-
-      <Separator />
 
       <p className="text-sm text-muted-foreground">
         <Link href="/requests" className="underline">

@@ -23,9 +23,9 @@ const payColors: Record<string, string> = {
 
 export function RoleBadge({ role }: { role: string }) {
   return (
-    <Badge
+        <Badge
       variant="outline"
-      className={cn("capitalize", roleColors[role] ?? "")}
+      className={cn("capitalize text-xs", roleColors[role] ?? "")}
     >
       {role}
     </Badge>
@@ -34,7 +34,7 @@ export function RoleBadge({ role }: { role: string }) {
 
 export function AgeBadge({ division }: { division: string }) {
   return (
-    <Badge variant="outline" className="bg-sky-100 text-sky-800 border-sky-200">
+    <Badge variant="outline" className="bg-sky-100 text-sky-800 border-sky-200 text-xs">
       {division}
     </Badge>
   );
@@ -51,7 +51,7 @@ export function LevelBadge({ level }: { level: string | null }) {
           ? "Rec"
           : level.toUpperCase();
   return (
-    <Badge variant="outline" className="bg-stone-100 text-stone-800 border-stone-200">
+    <Badge variant="outline" className="bg-stone-100 text-stone-800 border-stone-200 text-xs">
       {display}
     </Badge>
   );
@@ -78,7 +78,7 @@ export function PayBadge({
   return (
     <Badge
       variant="outline"
-      className={cn(payColors[payType] ?? "")}
+      className={cn("text-xs", payColors[payType] ?? "")}
     >
       {label}
     </Badge>
@@ -89,7 +89,7 @@ export function StatusBadge({ status }: { status: string }) {
   return (
     <Badge
       variant="outline"
-      className={cn("capitalize", statusColors[status] ?? "")}
+      className={cn("capitalize text-xs", statusColors[status] ?? "")}
     >
       {status}
     </Badge>
@@ -107,7 +107,7 @@ export function SessionTypeBadge({ label }: { label: string }) {
   return (
     <Badge
       variant="outline"
-      className={cn(sessionColors[label] ?? "bg-muted text-muted-foreground")}
+      className={cn("text-xs", sessionColors[label] ?? "bg-muted text-muted-foreground")}
     >
       {label}
     </Badge>
@@ -116,8 +116,24 @@ export function SessionTypeBadge({ label }: { label: string }) {
 
 export function ChipBadge({ label }: { label: string }) {
   return (
-    <Badge variant="outline" className="bg-muted/60 text-foreground">
+    <Badge variant="outline" className="bg-muted/60 text-foreground text-xs">
       {label}
+    </Badge>
+  );
+}
+
+export function LocationAccessBadge({ hasAccess }: { hasAccess: boolean }) {
+  return (
+    <Badge
+      variant="outline"
+      className={cn(
+        "text-xs",
+        hasAccess
+          ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+          : "bg-muted text-muted-foreground"
+      )}
+    >
+      {hasAccess ? "Has field access" : "No field access"}
     </Badge>
   );
 }

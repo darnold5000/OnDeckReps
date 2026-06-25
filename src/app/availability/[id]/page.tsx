@@ -7,17 +7,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { ButtonLink } from "@/components/button-link";
+import { DetailSummary } from "@/components/detail-summary";
 import {
   AgeBadge,
   LevelBadge,
+  LocationAccessBadge,
   PayBadge,
   RoleBadge,
   StatusBadge,
 } from "@/components/status-badges";
+import { SafetyNotice } from "@/components/safety-notice";
 import type { AvailabilityPost } from "@/lib/types";
-import { formatDate, formatTime } from "@/lib/format";
-import { MapPin, Calendar, Clock, Car } from "lucide-react";
+import { formatDate, formatPayType, formatTime } from "@/lib/format";
 
 export async function generateMetadata({
   params,
@@ -42,6 +44,9 @@ export default async function AvailabilityDetailPage({
 }) {
   const { id } = await params;
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const { data: post } = await supabase
     .from("availability_posts")
@@ -65,86 +70,126 @@ export default async function AvailabilityDetailPage({
   };
 
   const player = typedPost.player_profiles;
+  const title = `${player?.player_name ?? "Player"} available as ${typedPost.available_role}`;
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <div className="space-y-2">
-        <div className="flex flex-wrap items-start justify-between gap-2">
-          <h1 className="text-2xl font-bold">
-            {player?.player_name ?? "Player"} available
-          </h1>
-          <StatusBadge status={typedPost.status} />
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          <RoleBadge role={typedPost.available_role} />
-          {player?.age_division && <AgeBadge division={player.age_division} />}
-          {player?.team_level && <LevelBadge level={player.team_level} />}
-          {typedPost.pay_expectation && (
-            <PayBadge payType={typedPost.pay_expectation} />
-          )}
-        </div>
-        <p className="text-sm text-muted-foreground">
-          Posted by {typedPost.profiles?.full_name ?? "Parent"}
-        </p>
+    <div className="mx-auto max-w-2xl space-y-5">
+      <DetailSummary
+        title={title}
+        badge={<StatusBadge status={typedPost.status} />}
+        chips={
+          <>
+            <RoleBadge role={typedPost.available_role} />
+            {player?.age_division && <AgeBadge division={player.age_division} />}
+            {player?.team_level && <LevelBadge level={player.team_level} />}
+            <LocationAccessBadge hasAccess={typedPost.has_location_access} />
+            {typedPost.pay_expectation && (
+              <PayBadge payType={typedPost.pay_expectation} />
+            )}
+          </>
+        }
+        rows={[
+          {
+            label: "Date",
+            value: formatDate(typedPost.session_date),
+          },
+          {
+            label: "Time",
+            value: `${formatTime(typedPost.start_time)}${
+              typedPost.end_time ? ` – ${formatTime(typedPost.end_time)}` : ""
+            }`,
+          },
+          {
+            label: "Location",
+            value: `${typedPost.city}, ${typedPost.state}`,
+          },
+          {
+            label: "Travel",
+            value:
+              typedPost.can_travel && typedPost.travel_radius_miles
+                ? `Up to ${typedPost.travel_radius_miles} miles`
+                : "Local only",
+          },
+          {
+            label: "Field access",
+            value: typedPost.has_location_access
+              ? typedPost.location_details || "Yes"
+              : "No",
+          },
+          {
+            label: "Pay",
+            value: typedPost.pay_expectation
+              ? formatPayType(typedPost.pay_expectation)
+              : "Open",
+          },
+        ]}
+      />
+
+      <div className="sticky top-14 z-30 -mx-4 border-b bg-background/95 px-4 py-3 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+        {user ? (
+          typedPost.profiles?.phone ? (
+            <p className="text-sm">
+              <span className="text-muted-foreground">Contact parent: </span>
+              <a
+                href={`tel:${typedPost.profiles.phone}`}
+                className="font-medium text-primary underline"
+              >
+                {typedPost.profiles.phone}
+              </a>
+            </p>
+          ) : (
+            <p className="rounded-lg border border-dashed bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
+              Contact flow coming soon. For now, coordinate through your shared
+              network or check back when in-app messaging launches.
+            </p>
+          )
+        ) : (
+          <ButtonLink href="/signup" className="min-h-11 w-full">
+            Sign up to connect with this family
+          </ButtonLink>
+        )}
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Availability details</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-            {formatDate(typedPost.session_date)}
-          </div>
-          <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-muted-foreground" />
-            {formatTime(typedPost.start_time)}
-            {typedPost.end_time && ` – ${formatTime(typedPost.end_time)}`}
-          </div>
-          <div className="flex items-center gap-2">
-            <MapPin className="h-4 w-4 text-muted-foreground" />
-            {typedPost.city}, {typedPost.state}
-          </div>
-          {typedPost.can_travel && typedPost.travel_radius_miles && (
-            <div className="flex items-center gap-2">
-              <Car className="h-4 w-4 text-muted-foreground" />
-              Will travel up to {typedPost.travel_radius_miles} miles
-            </div>
-          )}
-          {typedPost.has_location_access && typedPost.location_details && (
-            <p className="text-muted-foreground">
-              Location access: {typedPost.location_details}
-            </p>
-          )}
-          {typedPost.notes && (
-            <p className="rounded-md bg-muted p-3">{typedPost.notes}</p>
-          )}
-          {player?.bio && (
-            <p className="text-muted-foreground">
-              <strong>About player:</strong> {player.bio}
-            </p>
-          )}
-        </CardContent>
-      </Card>
+      {typedPost.notes && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Notes</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm text-muted-foreground">
+            {typedPost.notes}
+          </CardContent>
+        </Card>
+      )}
+
+      {player?.bio && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">About {player.player_name}</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm text-muted-foreground">
+            {player.bio}
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Contact</CardTitle>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">Contact</CardTitle>
         </CardHeader>
-        <CardContent className="text-sm text-muted-foreground">
-          {/* TODO: In-app messaging — for now show parent name */}
+        <CardContent className="space-y-2 text-sm text-muted-foreground">
           <p>
-            Contact {typedPost.profiles?.full_name ?? "the parent"} to coordinate
-            this session.
+            Posted by {typedPost.profiles?.full_name ?? "a parent"}. Coordinate
+            session details directly and supervise together.
           </p>
-          {typedPost.profiles?.phone && (
-            <p className="mt-2">Phone: {typedPost.profiles.phone}</p>
+          {!typedPost.profiles?.phone && (
+            <p className="rounded-md bg-muted px-3 py-2 text-foreground">
+              In-app contact flow coming soon.
+            </p>
           )}
         </CardContent>
       </Card>
 
-      <Separator />
+      <SafetyNotice />
 
       <p className="text-sm text-muted-foreground">
         <Link href="/availability" className="underline">

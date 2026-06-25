@@ -25,11 +25,20 @@ export function RequestActions({
   if (status !== "open") return null;
 
   return (
-    <div className="flex flex-wrap gap-2">
-      <Button size="sm" onClick={() => updateStatus("filled")}>
+    <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+      <Button
+        size="sm"
+        className="min-h-11 w-full sm:w-auto"
+        onClick={() => updateStatus("filled")}
+      >
         Mark as filled
       </Button>
-      <Button size="sm" variant="outline" onClick={() => updateStatus("cancelled")}>
+      <Button
+        size="sm"
+        variant="outline"
+        className="min-h-11 w-full sm:w-auto"
+        onClick={() => updateStatus("cancelled")}
+      >
         Cancel request
       </Button>
     </div>

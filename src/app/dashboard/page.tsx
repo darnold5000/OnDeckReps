@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { ButtonLink } from "@/components/button-link";
+import { EmptyState } from "@/components/empty-state";
 import {
   Card,
   CardContent,
@@ -56,6 +57,8 @@ export default async function DashboardPage() {
       .limit(3),
   ]);
 
+  const openRequests = (requests as RepRequest[])?.filter((r) => r.status === "open") ?? [];
+
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -65,15 +68,17 @@ export default async function DashboardPage() {
             Welcome{profile?.full_name ? `, ${profile.full_name}` : ""}!
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <ButtonLink href="/requests/new" size="sm">
-            Create Request
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+          <ButtonLink href="/requests/new" size="sm" className="min-h-11 w-full sm:w-auto">
+            Post a Request
           </ButtonLink>
-          <ButtonLink href="/players/new" size="sm" variant="outline">
-            Add Player
-          </ButtonLink>
-          <ButtonLink href="/availability/new" size="sm" variant="outline">
-            Post Availability
+          <ButtonLink
+            href="/availability/new"
+            size="sm"
+            variant="outline"
+            className="min-h-11 w-full sm:w-auto"
+          >
+            Share Availability
           </ButtonLink>
         </div>
       </div>
@@ -81,17 +86,17 @@ export default async function DashboardPage() {
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Parent profile</CardTitle>
-          <CardDescription>Your contact information</CardDescription>
+          <CardDescription>Your contact information for other families</CardDescription>
         </CardHeader>
         <CardContent>
           <ProfileForm profile={profile} />
         </CardContent>
       </Card>
 
-      <section id="players" className="scroll-mt-20 space-y-3">
+      <section id="players" className="scroll-mt-24 space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">My player profiles</h2>
-          <ButtonLink href="/players/new" size="sm" variant="ghost">
+          <ButtonLink href="/players/new" size="sm" variant="ghost" className="min-h-11">
             + Add
           </ButtonLink>
         </div>
@@ -100,9 +105,14 @@ export default async function DashboardPage() {
             {(players as PlayerProfile[]).map((player) => (
               <Card key={player.id}>
                 <CardHeader className="pb-2">
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start justify-between gap-2">
                     <CardTitle className="text-base">{player.player_name}</CardTitle>
-                    <ButtonLink href={`/players/${player.id}/edit`} size="sm" variant="ghost">
+                    <ButtonLink
+                      href={`/players/${player.id}/edit`}
+                      size="sm"
+                      variant="ghost"
+                      className="min-h-11"
+                    >
                       Edit
                     </ButtonLink>
                   </div>
@@ -115,39 +125,42 @@ export default async function DashboardPage() {
             ))}
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">
-            No players yet.{" "}
-            <Link href="/players/new" className="text-primary underline">
-              Add your first player
-            </Link>
-          </p>
+          <EmptyState
+            title="No players added yet"
+            description="Add your player so you can post availability or respond to requests."
+            actionLabel="Add Player"
+            actionHref="/players/new"
+          />
         )}
       </section>
 
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">My open requests</h2>
-          <ButtonLink href="/requests" size="sm" variant="ghost">
+          <ButtonLink href="/requests" size="sm" variant="ghost" className="min-h-11">
             View all
           </ButtonLink>
         </div>
-        {(requests as RepRequest[])?.filter((r) => r.status === "open").length ? (
+        {openRequests.length ? (
           <div className="grid gap-3 sm:grid-cols-2">
-            {(requests as RepRequest[])
-              .filter((r) => r.status === "open")
-              .map((request) => (
-                <RequestCard key={request.id} request={request} />
-              ))}
+            {openRequests.map((request) => (
+              <RequestCard key={request.id} request={request} />
+            ))}
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">No open requests.</p>
+          <EmptyState
+            title="No open requests"
+            description="Post a live AB, bullpen, or catcher need and let nearby families respond."
+            actionLabel="Post a Request"
+            actionHref="/requests/new"
+          />
         )}
       </section>
 
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">My availability posts</h2>
-          <ButtonLink href="/availability" size="sm" variant="ghost">
+          <ButtonLink href="/availability" size="sm" variant="ghost" className="min-h-11">
             View all
           </ButtonLink>
         </div>
@@ -158,14 +171,20 @@ export default async function DashboardPage() {
             ))}
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">No availability posts.</p>
+          <EmptyState
+            title="No availability posted"
+            description="Share when your player is free for pitching, hitting, or catching reps."
+            actionLabel="Share Availability"
+            actionHref="/availability/new"
+            actionVariant="outline"
+          />
         )}
       </section>
 
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">Browse nearby requests</h2>
-          <ButtonLink href="/requests" size="sm" variant="ghost">
+          <ButtonLink href="/requests" size="sm" variant="ghost" className="min-h-11">
             Browse all
           </ButtonLink>
         </div>
@@ -176,9 +195,13 @@ export default async function DashboardPage() {
             ))}
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">
-            No open requests from other families right now.
-          </p>
+          <EmptyState
+            title="No nearby requests right now"
+            description="Check back soon or post your own need to get the ball rolling."
+            actionLabel="Post a Request"
+            actionHref="/requests/new"
+            actionVariant="outline"
+          />
         )}
       </section>
     </div>

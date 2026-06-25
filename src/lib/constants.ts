@@ -8,6 +8,9 @@ export const LANDING_HEADLINE =
 export const LANDING_SUBHEAD =
   "Post what you need — pitcher, hitter, catcher, location, and time — and connect with travel ball families for game-like reps outside team practice.";
 
+export const LANDING_SUBHEAD_SHORT =
+  "Connect with travel ball families for game-like reps near you.";
+
 export const SAMPLE_REQUESTS = [
   {
     title: "Need 11U pitcher for live ABs",
@@ -119,4 +122,4 @@ export const CONTACT_PREFERENCES = [
 export const REQUEST_STATUSES = ["open", "filled", "cancelled"] as const;
 
 export const SAFETY_NOTICE =
-  "OnDeck Reps helps families connect. Parents/guardians are responsible for supervision, location safety, protective equipment, and deciding whether a session is appropriate. Youth players should never attend sessions without a parent/guardian.";
+  "Parents coordinate directly and are responsible for supervision, location safety, protective equipment, and deciding whether a session is appropriate. Youth players should never attend sessions without a parent or guardian.";

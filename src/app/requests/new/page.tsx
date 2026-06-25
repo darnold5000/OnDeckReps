@@ -24,13 +24,11 @@ export default async function NewRequestPage() {
   return (
     <div className="mx-auto max-w-lg space-y-4">
       <div>
-        <h1 className="text-2xl font-bold">Create request</h1>
-        <p className="text-muted-foreground">
-          Post what you need for your player&apos;s session
+        <h1 className="text-2xl font-bold">Post a request</h1>
+        <p className="text-sm text-muted-foreground">
+          Tell nearby families what you need — role, level, time, and place.
         </p>
       </div>
-
-      <SafetyNotice />
 
       <Card>
         <CardHeader>
@@ -43,6 +41,8 @@ export default async function NewRequestPage() {
           <RequestForm />
         </CardContent>
       </Card>
+
+      <SafetyNotice />
 
       <p className="text-sm text-muted-foreground">
         <Link href="/dashboard" className="underline">

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { ButtonLink } from "@/components/button-link";
+import { EmptyState } from "@/components/empty-state";
 import { AvailabilityCard } from "@/components/availability-card";
 import { AvailabilityFilters } from "@/components/availability-filters";
 import type { AvailabilityPost } from "@/lib/types";
@@ -44,16 +44,20 @@ export default async function AvailabilityPage({
     );
   }
 
+  const hasFilters = Object.keys(params).length > 0;
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">Browse Availability</h1>
-          <p className="text-muted-foreground">
-            Players available for live reps
+          <p className="text-sm text-muted-foreground">
+            Players open for pitching, hitting, and catching reps
           </p>
         </div>
-        <ButtonLink href="/availability/new">Post Availability</ButtonLink>
+        <ButtonLink href="/availability/new" className="min-h-11 w-full sm:w-auto">
+          Share Availability
+        </ButtonLink>
       </div>
 
       <Suspense fallback={<div className="h-32 animate-pulse rounded-lg bg-muted" />}>
@@ -61,15 +65,27 @@ export default async function AvailabilityPage({
       </Suspense>
 
       {filtered.length ? (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
           {filtered.map((post) => (
             <AvailabilityCard key={post.id} post={post} />
           ))}
         </div>
       ) : (
-        <p className="py-12 text-center text-muted-foreground">
-          No availability posts match your filters.
-        </p>
+        <EmptyState
+          title={
+            hasFilters
+              ? "No availability matches your filters"
+              : "No availability posted yet"
+          }
+          description={
+            hasFilters
+              ? "Try adjusting your filters or check back as more families post open times."
+              : "Be the first to share when your player is free for extra reps."
+          }
+          actionLabel={hasFilters ? "Clear filters" : "Share Availability"}
+          actionHref={hasFilters ? "/availability" : "/availability/new"}
+          actionVariant={hasFilters ? "outline" : "default"}
+        />
       )}
     </div>
   );
