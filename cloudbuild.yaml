@@ -1,4 +1,5 @@
 steps:
+  # Buildpack build: env must be present during `npm run build` for NEXT_PUBLIC_* inlining.
   - name: "gcr.io/k8s-skaffold/pack"
     env:
       - "NEXT_PUBLIC_SUPABASE_URL=https://pmjcimkqthgyortulvyk.supabase.co"
@@ -9,7 +10,12 @@ steps:
       - "--builder"
       - "gcr.io/buildpacks/builder"
       - "--publish"
+      - "--env"
+      - "NEXT_PUBLIC_SUPABASE_URL=https://pmjcimkqthgyortulvyk.supabase.co"
+      - "--env"
+      - "NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_h81SbQOich8v2Z2JA6_hTg__DtKRj4Z"
 
+  # Runtime env for the Node server (and PublicEnvScript fallback for the browser).
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: "gcloud"
     args:

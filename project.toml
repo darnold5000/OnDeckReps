@@ -1,0 +1,12 @@
+# Google Cloud Buildpacks — build-time env for Next.js client inlining.
+# Cloud Build also sets these on the pack step and via --env flags.
+[_]
+schema-version = "0.2"
+
+[[build.env]]
+name = "NEXT_PUBLIC_SUPABASE_URL"
+value = "https://pmjcimkqthgyortulvyk.supabase.co"
+
+[[build.env]]
+name = "NEXT_PUBLIC_SUPABASE_ANON_KEY"
+value = "sb_publishable_h81SbQOich8v2Z2JA6_hTg__DtKRj4Z"

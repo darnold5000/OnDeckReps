@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/layout/header";
 import { MobileNav } from "@/components/layout/nav-links";
+import { PublicEnvScript } from "@/components/public-env-script";
 import { createClient } from "@/lib/supabase/server";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 import "./globals.css";
@@ -39,6 +40,9 @@ export default async function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <PublicEnvScript />
+      </head>
       <body className="flex min-h-full flex-col pb-16 md:pb-0">
         <Header user={user} />
         <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
